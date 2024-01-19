@@ -7,8 +7,9 @@ import ActivityDashboard from '../../features/activities/dashboard/ActivityDashb
 
 function App() {
     // useState is a React Hook that let you add a state variable to your component.
-    // const [state, setState] = useState(initialState);
+    // const [state, setState] = useState<type>(initialState);
     const [activities, setActivities] = useState<Activity[]>([]);
+    const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
 
     useEffect(() => {
         axios.get<Activity[]>('http://localhost:5000/api/activities').then(response => {
@@ -16,11 +17,24 @@ function App() {
         });
     }, []);
 
+    function handleSelectActivity(id: string) {
+        setSelectedActivity(activities.find(x => x.id == id));
+    }
+
+    function handleCancleSelectActivity() {
+        setSelectedActivity(undefined);
+    }
+
     return (
         <>
             <NavBar></NavBar>
-            <Container style={{marginTop: '7em'}}>
-                <ActivityDashboard activities={activities} />
+            <Container style={{ marginTop: '7em' }}>
+                <ActivityDashboard 
+                    activities={activities}
+                    selectedActivity={selectedActivity}
+                    selectActivity={handleSelectActivity}
+                    cancelSelectActivity={handleCancleSelectActivity}
+                />
             </Container>
         </>
     );
