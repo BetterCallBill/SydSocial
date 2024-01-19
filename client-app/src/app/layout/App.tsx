@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Container, Header, List } from 'semantic-ui-react';
 import { Activity } from '../models/activity';
 import NavBar from './NavBar';
+import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 
 function App() {
     // useState is a React Hook that let you add a state variable to your component.
@@ -19,11 +20,7 @@ function App() {
         <>
             <NavBar></NavBar>
             <Container style={{marginTop: '7em'}}>
-                <List>
-                    {activities.map(activity => (
-                        <List.Item key={activity.id}>{activity.title}</List.Item>
-                    ))}
-                </List>
+                <ActivityDashboard activities={activities} />
             </Container>
         </>
     );
