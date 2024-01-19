@@ -4,6 +4,7 @@ import { Container } from 'semantic-ui-react';
 import { Activity } from '../models/activity';
 import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
+import { v4 as uuid } from 'uuid';
 
 function App() {
     // useState is a React Hook that let you add a state variable to your component.
@@ -19,7 +20,7 @@ function App() {
     }, []);
 
     function handleSelectActivity(id: string) {
-        setSelectedActivity(activities.find(x => x.id == id));
+        setSelectedActivity(activities.find(x => x.id === id));
     }
 
     function handleCancleSelectActivity() {
@@ -38,7 +39,7 @@ function App() {
     function handleCreateOrEditActivity(activity: Activity) {
         activity.id 
         ? setActivities([...activities.filter(x => x.id !== activity.id), activity])
-        : setActivities([...activities, activity]);
+        : setActivities([...activities, { ...activity, id: uuid() }]);
         setEditMode(false);
         setSelectedActivity(activity);
     }
