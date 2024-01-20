@@ -1,18 +1,19 @@
 import axios, { AxiosResponse } from 'axios';
+import { Activity } from '../models/activity';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
-const respondseBody = (response: AxiosResponse) => response.data;
+const respondseBody = <T> (response: AxiosResponse<T>) => response.data;
 
 const requests = {
-    get: (url: string) => axios.get(url).then(respondseBody),
-    post: (url: string, body: {}) => axios.post(url, body).then(respondseBody),
-    put: (url: string, body: {}) => axios.put(url, body).then(respondseBody),
-    delete: (url: string) => axios.delete(url).then(respondseBody)
+    get: <T> (url: string) => axios.get<T>(url).then(respondseBody),
+    post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(respondseBody),
+    put: <T> (url: string, body: {}) => axios.put<T>(url, body).then(respondseBody),
+    delete: <T> (url: string) => axios.delete<T>(url).then(respondseBody)
 }
 
 const Activities = {
-    list: () => requests.get('/activities')
+    list: () => requests.get<Activity[]>('/activities')
 };
 
 const agent = {
