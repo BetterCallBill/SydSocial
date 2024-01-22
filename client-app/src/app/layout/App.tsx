@@ -6,8 +6,11 @@ import ActivityDashboard from '../../features/activities/dashboard/ActivityDashb
 import { v4 as uuid } from 'uuid';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
+import { useStore } from '../stores/store';
 
 function App() {
+    const { activityStore } = useStore();
+    
     // useState is a React Hook that let you add a state variable to your component.
     // const [state, setState] = useState<type>(initialState);
     const [activities, setActivities] = useState<Activity[]>([]);
@@ -85,6 +88,8 @@ function App() {
         <>
             <NavBar openForm={handleFormOpen}></NavBar>
             <Container style={{ marginTop: '7em' }}>
+                <h2>{ activityStore.title }</h2>
+                
                 <ActivityDashboard 
                     activities={activities}
                     selectedActivity={selectedActivity}
