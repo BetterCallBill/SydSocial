@@ -1,11 +1,32 @@
-import { makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
+import { Activity } from "../models/activity";
+import agent from "../api/agent";
 
 export default class ActivityStore {
-    title = 'Hi';
-    
+    activities: Activity[] = [];
+    selectedActivity: Activity | null = null;
+    editMode = false;
+    loading = false;
+    loadingInitial = false;
+
     constructor() {
-        makeObservable(this, {
-            title: observable
-        })
+        makeAutoObservable(this);
+    }
+
+    // bind loadActivities to class ActivityStore
+    loadActivities = async () => {
+        this.loadingInitial = true;
+
+        try {
+            const activities = await agent.Activities.list();
+            activities.forEach(activity => {
+                activity.date = activity.date.split('T')[0];
+                this.activities.push(activity);
+            })
+
+            this.loadingInitial = false;
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
