@@ -1,14 +1,15 @@
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Button, Form, Segment } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
+import { useParams } from 'react-router-dom';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 export default observer(function ActivityForm() {
     const { activityStore } = useStore();
-    const { selectedActivity, closeForm, createActivity, updateActivity, loading } = activityStore;
-    
-    const initialState = selectedActivity ?? {
+    const { createActivity, updateActivity, loading, loadActivity, loadingInitial } = activityStore;
+    const { id } = useParams<{id: string}>();
+    const [activity, setActivity] = useState({
         id: '',
         title: '',
         date: '',
@@ -16,9 +17,15 @@ export default observer(function ActivityForm() {
         category: '',
         city: '',
         venue: '',
-    };
-
-    const [activity, setActivity] = useState(initialState);
+    });
+    
+    useEffect(() => {
+      if (id) {
+        loadActivity(id).then(activity => {
+            setActivity(activity!);
+        })
+      }
+    }, [id, loadActivity]);
 
     function handleSubmit() {
         activity.id ? updateActivity(activity) : createActivity(activity);
@@ -30,6 +37,10 @@ export default observer(function ActivityForm() {
             ...activity,
             [name]: value,
         });
+    }
+    
+    if (loadingInitial) {
+        return (<LoadingComponent content='Loading activity...' />)
     }
 
     return (
@@ -44,7 +55,7 @@ export default observer(function ActivityForm() {
 
                 <Button.Group widths={2}>
                     <Button loading={loading} positive type="submit" content="Save"></Button>
-                    <Button onClick={closeForm} type="button" content="Cancel"></Button>
+                    <Button type="button" content="Cancel"></Button>
                 </Button.Group>
             </Form>
         </Segment>
