@@ -1,8 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../models/activity";
 import agent from "../api/agent";
-import { v4 as uuid } from 'uuid';
-
 export default class ActivityStore {
     activityRegister = new Map<string, Activity>();
     selectedActivity: Activity | undefined = undefined;
@@ -15,11 +13,13 @@ export default class ActivityStore {
     }
 
     get activitiesByDate() {
+        console.log(this.activityRegister)
         return Array.from(this.activityRegister.values()).sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
     }
 
     // bind loadActivities to class ActivityStore
     loadActivities = async () => {
+        console.log("firstfirstfirstfirstfirstfirstfirst")
         this.setLoadinginitial(true);
         try {
             const activities = await agent.Activities.list();
@@ -32,7 +32,7 @@ export default class ActivityStore {
                 this.setLoadinginitial(false);
             })
         } catch (error) {
-            console.log(error)
+            console.log(error);
             this.setLoadinginitial(false);
         }
     }
@@ -74,8 +74,6 @@ export default class ActivityStore {
 
     createActivity = async (activity: Activity) => {
         this.loading = true;
-        activity.id = uuid();
-
         try {
             await agent.Activities.create(activity);
             runInAction(() => {
