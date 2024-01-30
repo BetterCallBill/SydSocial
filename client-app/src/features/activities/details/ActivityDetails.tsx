@@ -1,30 +1,35 @@
-import React from 'react';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardMeta, Image } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
+import { useEffect } from 'react';
+import { Button, Card, CardContent, CardDescription, CardHeader, CardMeta, Grid, Image } from 'semantic-ui-react';
+import { useStore } from '../../../app/stores/store';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { useParams } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import ActivityDetailedHeader from '../dashboard/ActivityDetailedHeader';
+import ActivityDetailedInfo from '../dashboard/ActivityDetailedInfo';
+import ActivityDetailedChat from '../dashboard/ActivityDetailedChat';
+import ActivityDetailedSidebar from '../dashboard/ActivityDetailedSidebar';
 
-interface Props {
-    activity: Activity;
-    cancelSelectActivity: () => void;
-    openForm: (id: string) => void;
-}
+export default observer(function ActivityDetails() {
+    const { activityStore } = useStore();
+    const { selectedActivity: activity, loadActivity, loadingInitial } = activityStore;
+    const { id } = useParams<{ id: string }>();
 
-export default function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
+    useEffect(() => {
+        if (id) loadActivity(id);
+    }, [id, loadActivity]);
+
+    if (loadingInitial || !activity) return <LoadingComponent />;
+
     return (
-        <Card fluid>
-            <Image src={`/assets/categoryImages/${activity.category}.jpg`} />
-            <CardContent>
-                <CardHeader>{activity.title}</CardHeader>
-                <CardMeta>
-                    <span className="date">{activity.date}</span>
-                </CardMeta>
-                <CardDescription>{activity.description}</CardDescription>
-            </CardContent>
-            <CardContent extra>
-                <Button.Group widths={2}>
-                    <Button onClick={() => openForm(activity.id)} basic color='blue' content='Edit'></Button>
-                    <Button onClick={cancelSelectActivity} basic color='red' content='Cancel'></Button>
-                </Button.Group>
-            </CardContent>
-        </Card>
+        <Grid>
+            <Grid.Column width={10}>
+                <ActivityDetailedHeader activity={activity} />
+                <ActivityDetailedInfo activity={activity} />
+                <ActivityDetailedChat />
+            </Grid.Column>
+            <Grid.Column width={6}>
+                <ActivityDetailedSidebar />
+            </Grid.Column>
+        </Grid>
     );
-}
+});
