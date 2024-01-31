@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardMeta, Grid, Image } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { useStore } from '../../../app/stores/store';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { useParams } from 'react-router-dom';
