@@ -1,5 +1,7 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Activity } from '../models/activity';
+import { toast } from 'react-toastify';
+import { history } from '../..';
 
 const sleep = (delay: number) => {
     return new Promise(resolve => {
@@ -7,25 +9,56 @@ const sleep = (delay: number) => {
     })
 }
 
+type MyErrorResponse = {
+    errors: { detail: string }[]
+}
+
 axios.interceptors.response.use(async response => {
-    try {
-        await sleep(1000);
-        return response;
-    } catch (error) {
-        console.log(error);
-        return await Promise.reject(error);
+    await sleep(1000);
+    return response;
+}, (error: AxiosError<MyErrorResponse>) => {
+    const { data, status } = error.response!;
+
+    switch (status) {
+        case 400:
+            if (data.errors) {
+                const errorArray = [];
+                console.log("data.errors: ", data.errors)
+                for (const key in data.errors) {
+                    if (data.errors[key]) {
+                        errorArray.push(data.errors[key]);
+                    }
+                }
+                throw errorArray.flat();
+            } else {
+                toast.error(data.errors);
+            }
+            break;
+        case 401:
+            toast.error('Unauthorized');
+            break;
+        case 404:
+            history.push('/not-found');
+            break;
+        case 500:
+            toast.error('Server error');
+            break;
+        default:
+            break;
     }
+
+    return Promise.reject(error);
 })
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
-const respondseBody = <T> (response: AxiosResponse<T>) => response.data;
+const respondseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const requests = {
-    get: <T> (url: string) => axios.get<T>(url).then(respondseBody),
-    post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(respondseBody),
-    put: <T> (url: string, body: {}) => axios.put<T>(url, body).then(respondseBody),
-    delete: <T> (url: string) => axios.delete<T>(url).then(respondseBody)
+    get: <T>(url: string) => axios.get<T>(url).then(respondseBody),
+    post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(respondseBody),
+    put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(respondseBody),
+    delete: <T>(url: string) => axios.delete<T>(url).then(respondseBody)
 }
 
 const Activities = {
