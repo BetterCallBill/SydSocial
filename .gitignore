@@ -32,3 +32,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+API/sydsocial.db
+API/sydsocial.db-shm
+API/sydsocial.db-wal

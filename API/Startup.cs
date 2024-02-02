@@ -1,6 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Persistence;
+using API.Extensions;
+using Application.Activities;
+using Application.Middleware;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace API
 {
@@ -15,31 +17,28 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
-            });
-            
-            services.AddDbContext<DataContext>(opt => {
-                opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-            });
+            services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<Create>();
+            services.AddApplicationServices(_config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // custom middleware
+            app.UseMiddleware<ExceptionMiddleware>();
+            
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
             }
 
-            app.UseHttpsRedirection();
-
+            // app.UseHttpsRedirection();
+            
             app.UseRouting();
+            
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
