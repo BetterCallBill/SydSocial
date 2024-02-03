@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Activity } from '../models/activity';
 import { toast } from 'react-toastify';
 import { history } from '../..';
+import { store } from '../stores/store';
 
 const sleep = (delay: number) => {
     return new Promise(resolve => {
@@ -9,29 +10,30 @@ const sleep = (delay: number) => {
     })
 }
 
-type MyErrorResponse = {
-    errors: { detail: string }[]
-}
-
 axios.interceptors.response.use(async response => {
     await sleep(1000);
     return response;
-}, (error: AxiosError<MyErrorResponse>) => {
-    const { data, status } = error.response!;
+}, (error: AxiosError<any>) => {
+    const { data, status, config } = error.response!;
 
     switch (status) {
         case 400:
+            if (typeof data === 'string') {
+                toast.error(data);
+            }
+            
+            if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
+                history.push('/not-found');
+            }
+        
             if (data.errors) {
                 const errorArray = [];
-                console.log("data.errors: ", data.errors)
                 for (const key in data.errors) {
                     if (data.errors[key]) {
                         errorArray.push(data.errors[key]);
                     }
                 }
                 throw errorArray.flat();
-            } else {
-                toast.error(data.errors);
             }
             break;
         case 401:
@@ -41,7 +43,8 @@ axios.interceptors.response.use(async response => {
             history.push('/not-found');
             break;
         case 500:
-            toast.error('Server error');
+            store.commonStore.setServerError(data);
+            history.push('/server-error');
             break;
         default:
             break;
