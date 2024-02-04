@@ -7,6 +7,7 @@ import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormTextInput from '../../../app/common/form/FormTextInput';
+import FormTextArea from '../../../app/common/form/FormTextArea';
 
 export default observer(function ActivityForm() {
     const { activityStore } = useStore();
@@ -59,7 +60,7 @@ export default observer(function ActivityForm() {
                 {({ handleSubmit }) => (
                     <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
                         <FormTextInput placeholder='Title' name='title' />
-                        <FormTextInput placeholder="Description" name="description" />
+                        <FormTextArea rows={3} placeholder="Description" name="description" />
                         <FormTextInput placeholder="Category" name="category" />
                         <FormTextInput placeholder="Date" name="date" />
                         <FormTextInput placeholder="City" name="city" />
