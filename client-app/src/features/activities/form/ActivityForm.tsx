@@ -8,6 +8,8 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormTextInput from '../../../app/common/form/FormTextInput';
 import FormTextArea from '../../../app/common/form/FormTextArea';
+import FormSelectInput from '../../../app/common/form/FormSelectInput';
+import { categoryOptions } from '../../../app/common/options/categoryOptions';
 
 export default observer(function ActivityForm() {
     const { activityStore } = useStore();
@@ -61,7 +63,7 @@ export default observer(function ActivityForm() {
                     <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
                         <FormTextInput placeholder='Title' name='title' />
                         <FormTextArea rows={3} placeholder="Description" name="description" />
-                        <FormTextInput placeholder="Category" name="category" />
+                        <FormSelectInput placeholder="Category" name="category" options={categoryOptions} />
                         <FormTextInput placeholder="Date" name="date" />
                         <FormTextInput placeholder="City" name="city" />
                         <FormTextInput placeholder="Venue" name="venue" />
