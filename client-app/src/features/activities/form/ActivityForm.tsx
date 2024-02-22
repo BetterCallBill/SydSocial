@@ -10,6 +10,7 @@ import FormTextInput from '../../../app/common/form/FormTextInput';
 import FormTextArea from '../../../app/common/form/FormTextArea';
 import FormSelectInput from '../../../app/common/form/FormSelectInput';
 import { categoryOptions } from '../../../app/common/options/categoryOptions';
+import FormDateInput from '../../../app/common/form/FormDateInput';
 
 export default observer(function ActivityForm() {
     const { activityStore } = useStore();
@@ -64,7 +65,13 @@ export default observer(function ActivityForm() {
                         <FormTextInput placeholder='Title' name='title' />
                         <FormTextArea rows={3} placeholder="Description" name="description" />
                         <FormSelectInput placeholder="Category" name="category" options={categoryOptions} />
-                        <FormTextInput placeholder="Date" name="date" />
+                        <FormDateInput 
+                            placeholderText="Date" 
+                            name="date"
+                            showTimeSelect
+                            timeCaption='time'
+                            dateFormat={'MMMM d, yyyy h:mm aa'}
+                        />
                         <FormTextInput placeholder="City" name="city" />
                         <FormTextInput placeholder="Venue" name="venue" />
 
