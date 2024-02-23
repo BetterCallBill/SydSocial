@@ -8,6 +8,12 @@ namespace API.Services
 {
     public class TokenService
     {
+        private readonly IConfiguration _config;
+        public TokenService(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public string CreateToken(AppUser appUser)
         {
             var claims = new List<Claim>
@@ -18,7 +24,7 @@ namespace API.Services
             };
             
             // create key which can only be decoded by a single key
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some_big_key_value_here_secretsome_big_key_value_here_secretsome_big_key_value_here_secretsome_big_key_value_here_secret"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             
             var tokenDescriptor = new SecurityTokenDescriptor

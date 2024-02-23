@@ -28,7 +28,7 @@ namespace API
         {
             // custom middleware
             app.UseMiddleware<ExceptionMiddleware>();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
@@ -36,11 +36,12 @@ namespace API
             }
 
             // app.UseHttpsRedirection();
-            
+
             app.UseRouting();
-            
+
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
