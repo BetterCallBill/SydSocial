@@ -1,3 +1,4 @@
+using API.Services;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Persistence;
@@ -13,6 +14,8 @@ namespace API.Extensions
                 .AddSignInManager<SignInManager<AppUser>>();
                 
             services.AddAuthentication();
+            // scoped to the lifetime of the request
+            services.AddScoped<TokenService>();
             
             return services;
         }
