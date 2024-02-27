@@ -23,6 +23,7 @@ export default class UserStore {
                 this.user = user;
             })
             history.push('/activities');
+            store.modalStore.closeModal();
         } catch (error) {
             throw error;
         }
