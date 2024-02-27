@@ -18,19 +18,26 @@ function App() {
     return (
         <>
             <ToastContainer position="bottom-right" hideProgressBar />
-            <NavBar />
-            <Container style={{ marginTop: '7em' }}>
-                <Switch>
-                    <Route exact path="/" component={HomePage} />
-                    <Route exact path="/activities" component={ActivityDashboard} />
-                    <Route path="/activities/:id" component={ActivityDetails} />
-                    <Route path={['/createActivity', '/manage/:id']} component={ActivityForm} key={location.key} />
-                    <Route path="/errors" component={TestErrors} />
-                    <Route path="/server-error" component={ServerError} />
-                    <Route path="/login" component={LoginForm} />
-                    <Route component={NotFound} />
-                </Switch>
-            </Container>
+
+            {location.pathname === '/' ? (
+                <HomePage />
+            ) : (
+                <>
+                    <NavBar />
+                    <Container style={{ marginTop: '7em' }}>
+                        <Switch>
+                            <Route exact path="/" component={HomePage} />
+                            <Route exact path="/activities" component={ActivityDashboard} />
+                            <Route path="/activities/:id" component={ActivityDetails} />
+                            <Route path={['/createActivity', '/manage/:id']} component={ActivityForm} key={location.key} />
+                            <Route path="/errors" component={TestErrors} />
+                            <Route path="/server-error" component={ServerError} />
+                            <Route path="/login" component={LoginForm} />
+                            <Route component={NotFound} />
+                        </Switch>
+                    </Container>
+                </>
+            )}
         </>
     );
 }

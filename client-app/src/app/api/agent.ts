@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { Activity } from '../models/activity';
 import { toast } from 'react-toastify';
 import { history } from '../..';
@@ -11,44 +11,42 @@ const sleep = (delay: number) => {
     })
 }
 
+// add token to request header
+axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    const token = store.commonStore.token;
+    config.headers = config.headers ?? {};
+
+    config.headers.Authorization = `Bearer ${token}`;
+
+    return config;
+})
+
 axios.interceptors.response.use(async response => {
     await sleep(1000);
     return response;
-}, (error: AxiosError<any>) => {
-    const { data, status, config } = error.response!;
-
+}, (error: AxiosError) => {
+    const { status, headers } = error.response!
     switch (status) {
         case 400:
-            if (typeof data === 'string') {
-                toast.error(data);
-            }
-            
-            if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
-                history.push('/not-found');
-            }
-        
-            if (data.errors) {
-                const errorArray = [];
-                for (const key in data.errors) {
-                    if (data.errors[key]) {
-                        errorArray.push(data.errors[key]);
-                    }
-                }
-                throw errorArray.flat();
-            }
-            break;
+            toast.error('bad request');
+            break
         case 401:
-            toast.error('Unauthorized');
-            break;
+            if (
+                status === 401 &&
+                headers['www-authenticate']?.startsWith(
+                    'Bearer error="invalid_token"'
+                )
+            ) {
+                store.userStore.logout();
+                toast.error('Session expired - please login again');
+            }
+            break
         case 404:
             history.push('/not-found');
-            break;
+            break
         case 500:
-            store.commonStore.setServerError(data);
-            history.push('/server-error');
-            break;
-        default:
-            break;
+            toast.error('server error');
+            break
     }
 
     return Promise.reject(error);

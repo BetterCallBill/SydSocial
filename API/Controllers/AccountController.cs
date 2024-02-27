@@ -35,7 +35,7 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("Invalid email");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -44,7 +44,7 @@ namespace API.Controllers
                 return CreateUserObject(user);
             }
 
-            return Unauthorized();
+            return Unauthorized("Invalid password");
         }
 
         [HttpPost("register")]
@@ -64,8 +64,7 @@ namespace API.Controllers
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
-                UserName = registerDto.Username,
-                Bio = "test"
+                UserName = registerDto.Username
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
