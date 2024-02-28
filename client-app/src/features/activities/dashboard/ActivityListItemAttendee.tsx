@@ -1,12 +1,13 @@
 import { List, Image } from 'semantic-ui-react';
 import { Profile } from '../../../app/models/profile';
 import { Link } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
     attendees: Profile[];
 }
 
-export default function ActivityListItemAttendee({ attendees }: Props) {
+export default observer(function ActivityListItemAttendee({ attendees }: Props) {
     return (
         <List horizontal>
             {attendees.map(attendee => (
@@ -16,4 +17,4 @@ export default function ActivityListItemAttendee({ attendees }: Props) {
             ))}
         </List>
     );
-}
+})
