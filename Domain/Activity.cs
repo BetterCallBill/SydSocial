@@ -14,6 +14,6 @@ namespace Domain
         public string Venue { get; set; }
         
         // add many to many relations
-        public ICollection<ActivityAttendee> Attendees { get; set; }
+        public ICollection<ActivityAttendee> Attendees { get; set; } = new List<ActivityAttendee>();
     }
 }
