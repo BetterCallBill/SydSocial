@@ -11,13 +11,13 @@ import FormTextArea from '../../../app/common/form/FormTextArea';
 import FormSelectInput from '../../../app/common/form/FormSelectInput';
 import { categoryOptions } from '../../../app/common/options/categoryOptions';
 import FormDateInput from '../../../app/common/form/FormDateInput';
-import { Activity, ActivityFormValues } from '../../../app/models/activity';
+import { ActivityFormValues } from '../../../app/models/activity';
 import { v4 as uuid } from 'uuid';
 
 export default observer(function ActivityForm() {
     const { activityStore } = useStore();
     const history = useHistory();
-    const { createActivity, updateActivity, loading, loadActivity, loadingInitial } = activityStore;
+    const { createActivity, updateActivity, loadActivity, loadingInitial } = activityStore;
     const { id } = useParams<{ id: string }>();
     const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
