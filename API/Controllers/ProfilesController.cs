@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using Application.Profiles;
 using Microsoft.AspNetCore.Mvc;
 
