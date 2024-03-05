@@ -1,4 +1,4 @@
-import { Button, Grid, Header, Image } from 'semantic-ui-react';
+import { Button, Grid, Header } from 'semantic-ui-react';
 import PhotoWidgetDropzone from './PhotoWidgetDropzone';
 import { useEffect, useState } from 'react';
 import PhotoWidgetCropper from './PhotoWidgetCropper';
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function PhotoUploadWidget({ loading, uploadPhoto }: Props) {
-    const [files, setFiles] = useState<any>();
+    const [files, setFiles] = useState<any>([]);
     const [cropper, setCropper] = useState<Cropper>();
 
     function onCrop() {

@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import { Card, Header, Tab, Image, Grid, Button } from 'semantic-ui-react';
-import { Profile } from '../../app/models/profile';
+import { Photo, Profile } from '../../app/models/profile';
 import { useStore } from '../../app/stores/store';
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import PhotoUploadWidget from '../../app/common/imageUpload/PhotoUploadWidget';
 
 interface Props {
@@ -11,14 +11,21 @@ interface Props {
 
 export default observer(function ProfilePhotos({ profile }: Props) {
     const {
-        profileStore: { isCurrentUser, uploadPhoto, uploading },
+        profileStore: { isCurrentUser, uploadPhoto, uploading, loading, setMainPhoto },
     } = useStore();
     const [addPhotoModel, setAddPhotoModel] = useState(false);
+    const [target, setTarget] = useState('');
 
     function handlePhotoUpload(file: Blob) {
         uploadPhoto(file).then(() => setAddPhotoModel(false));
     }
     
+    // SyntheticEvent from react
+    function handleSetMainPhoto(photo: Photo, e: SyntheticEvent<HTMLButtonElement>) {
+        setTarget(e.currentTarget.name);
+        setMainPhoto(photo);
+    }
+
     return (
         <Tab.Pane>
             <Grid>
@@ -41,6 +48,20 @@ export default observer(function ProfilePhotos({ profile }: Props) {
                             {profile.photos?.map(photo => (
                                 <Card key={photo.id}>
                                     <Image src={photo.url} />
+                                    {isCurrentUser && (
+                                        <Button.Group>
+                                            <Button
+                                                basic
+                                                color="green"
+                                                content="Main"
+                                                name={photo.id}
+                                                disabled={photo.isMain}
+                                                loading={target === photo.id && loading}
+                                                onClick={e => handleSetMainPhoto(photo, e)}
+                                            />
+                                            <Button basic color='red' icon='trash' />
+                                        </Button.Group>
+                                    )}
                                 </Card>
                             ))}
                         </Card.Group>
