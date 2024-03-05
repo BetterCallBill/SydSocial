@@ -11,10 +11,14 @@ interface Props {
 
 export default observer(function ProfilePhotos({ profile }: Props) {
     const {
-        profileStore: { isCurrentUser },
+        profileStore: { isCurrentUser, uploadPhoto, uploading },
     } = useStore();
     const [addPhotoModel, setAddPhotoModel] = useState(false);
 
+    function handlePhotoUpload(file: Blob) {
+        uploadPhoto(file).then(() => setAddPhotoModel(false));
+    }
+    
     return (
         <Tab.Pane>
             <Grid>
@@ -31,7 +35,7 @@ export default observer(function ProfilePhotos({ profile }: Props) {
                 </Grid.Column>
                 <Grid.Column width={16}>
                     {addPhotoModel ? (
-                        <PhotoUploadWidget />
+                        <PhotoUploadWidget uploadPhoto={handlePhotoUpload} loading={uploading} />
                     ) : (
                         <Card.Group itemsPerRow={5}>
                             {profile.photos?.map(photo => (
