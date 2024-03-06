@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 namespace Infrastructure.Security
 {
     // IUserAccessor from '../Application/Interface'
-    // to get user token
     public class UserAccessor : IUserAccessor
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
